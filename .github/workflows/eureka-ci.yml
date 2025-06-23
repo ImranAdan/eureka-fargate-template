@@ -1,0 +1,28 @@
+name: Eureka CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'eureka/**'
+      - '.github/workflows/eureka-ci.yml'
+
+jobs:
+  build:
+    name: Build Eureka
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '24'
+
+      - name: Build with Maven
+        working-directory: ./eureka
+        run: mvn clean package
