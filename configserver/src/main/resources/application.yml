@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: config-server
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:config-server}
+    prefer-ip-address: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${CONFIG_GIT_URI:file:///config-repo}
+          default-label: ${CONFIG_GIT_LABEL:main}
+          search-paths: ${CONFIG_GIT_SEARCH_PATH:.}
