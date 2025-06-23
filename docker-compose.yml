@@ -1,0 +1,29 @@
+services:
+
+  eureka-server:
+    image: eureka-server:latest
+    container_name: eureka-server
+    build:
+      context: ./eureka
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
+
+  config-server:
+    image: config-server:latest
+    container_name: config-server
+    build:
+      context: ./configserver
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=${CONFIG_GIT_URI}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME=${CONFIG_GIT_USERNAME}
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=${CONFIG_GIT_PASSWORD}
+    depends_on:
+      - eureka-server
