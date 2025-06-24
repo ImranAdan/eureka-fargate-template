@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from faker import Faker
 import requests
 import os
+from eureka import register_with_eureka, start_heartbeat
 
 app = FastAPI()
 faker = Faker()
@@ -19,9 +20,9 @@ class BotInstance(BaseModel):
 
 def load_config():
     config_server_url = os.environ.get("CONFIG_SERVER_URL", "http://localhost:8888")
-    profile = os.environ.get("SPRING_PROFILES_ACTIVE", "dev")
+    profile = os.environ.get("SPRING_PROFILES_ACTIVE", "default")
     app_name = os.environ.get("SPRING_APPLICATION_NAME", "rogue-service")
-
+    
     url = f"{config_server_url}/{app_name}/{profile}"
     print(f"Fetching config from: {url}")
 
@@ -65,3 +66,13 @@ def spawn_rogue():
 @app.get("/health.json")
 def health_check():
     return {"status": "UP"}
+
+if __name__ == "__main__":
+    register_with_eureka()
+    start_heartbeat()
+
+    import uvicorn
+    import socket
+    HOSTNAME = os.getenv("EUREKA_INSTANCE_HOSTNAME", socket.gethostname())
+    PORT = int(os.getenv("PORT", 3000))
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
