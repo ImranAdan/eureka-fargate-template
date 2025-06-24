@@ -24,7 +24,7 @@ jobs:
           python-version: '3.10'
 
       - name: 📦 Install dependencies
-        working-directory: ./rogue-service
+        working-directory: rogue-service
         run: |
           python -m venv .venv
           source .venv/bin/activate
@@ -32,7 +32,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: 🧪 Run pytest
-        working-directory: ./rogue-service
+        working-directory: rogue-service
         run: |
           source .venv/bin/activate
           pytest
