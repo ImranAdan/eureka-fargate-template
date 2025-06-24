@@ -7,7 +7,7 @@ on:
     branches: [ main ]
     paths:
       - 'rogue-service/**'
-      - '.github/workflows/rogues-service-ci.yml'
+      - '.github/workflows/rogue-service-ci.yml'
 
 jobs:
   test:
