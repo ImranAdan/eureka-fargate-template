@@ -1,0 +1,10 @@
+# Maven and IDE noise
+target/
+.git/
+.gitignore
+README.md
+*.iml
+.idea/
+
+# OS / editor files
+.DS_Store

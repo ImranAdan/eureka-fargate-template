@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-maven:
-    name: Build with Maven
+    name: Verify Maven Build
     runs-on: ubuntu-latest
 
     permissions:
@@ -29,9 +29,9 @@ jobs:
           distribution: temurin
           java-version: '24'
 
-      - name: Build with Maven
+      - name: Verify Maven Build
         working-directory: ./eureka
-        run: mvn clean package
+        run: mvn verify
 
   build-and-push-docker:
     name: Build and Push Docker Image
@@ -60,7 +60,7 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
+      - name: Build Docker image (multi-stage)
         working-directory: ./eureka
         run: |
           ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
