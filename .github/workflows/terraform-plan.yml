@@ -2,8 +2,8 @@ name: Terraform Plan
 
 on:
   pull_request:
-   branches:
-    - main
+    branches:
+      - main
     paths:
       - 'terraform/**'
       - '.github/workflows/terraform-plan-ci.yml'
