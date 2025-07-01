@@ -214,6 +214,8 @@ terraform.rc
 .history
 .ionide
 
+.DS_Store
+
 .vscode
 
 .env

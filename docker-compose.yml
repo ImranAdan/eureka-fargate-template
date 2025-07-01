@@ -27,19 +27,26 @@ services:
       - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=${CONFIG_GIT_PASSWORD}
     depends_on:
       - eureka-server
-  rogue-service:
-    image: rogue-service:latest
-    container_name: rogue-service
+
+  battle-service:
+    image: battle-service:latest
+    container_name: battle-service
     build:
-      context: ./rogue-service
+      context: ./battle-service
     ports:
-      - "3000:3000"  # Expose container port 3000 to host port 3000
+      - "8080:8080"
     environment:
-      - PORT=3000  # Internal port the app listens on
-      - SPRING_APPLICATION_NAME=rogue-service
+      - SPRING_APPLICATION_NAME=battle-service
       - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
-      - EUREKA_SERVER=http://eureka-server:8761/eureka
-      - CONFIG_SERVER_URL=http://config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     depends_on:
       - eureka-server
       - config-server
+
+  debug:
+    image: curlimages/curl
+    container_name: debug
+    command: sleep infinity
+    networks:
+      - default
+
