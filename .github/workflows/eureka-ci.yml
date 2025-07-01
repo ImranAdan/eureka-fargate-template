@@ -46,7 +46,6 @@ jobs:
     env:
       AWS_REGION: eu-west-2
       ECR_REPO: eureka-server
-      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
 
     steps:
       - name: Checkout code
@@ -64,8 +63,11 @@ jobs:
       - name: Build Docker image
         working-directory: ./eureka
         run: |
+          ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
           docker build -t $ECR_REPO:latest .
           docker tag $ECR_REPO:latest $ECR_URI/$ECR_REPO:latest
 
       - name: Push Docker image to ECR
-        run: docker push $ECR_URI/$ECR_REPO:latest
+        run: |
+          ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${AWS_REGION}.amazonaws.com
+          docker push $ECR_URI/$ECR_REPO:latest
