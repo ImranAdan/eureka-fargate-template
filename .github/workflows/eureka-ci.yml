@@ -10,8 +10,17 @@ on:
 
 jobs:
   build:
-    name: Build Eureka
+    name: Build and Push Eureka
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write       # Required for OIDC federation
+      contents: read        # Required for actions/checkout
+
+    env:
+      AWS_REGION: eu-west-2
+      ECR_REPO: eureka-server
+      ECR_URI: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
 
     steps:
       - name: Checkout code
@@ -26,3 +35,21 @@ jobs:
       - name: Build with Maven
         working-directory: ./eureka
         run: mvn clean package
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-ecr-push
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        working-directory: ./eureka
+        run: |
+          docker build -t $ECR_REPO:latest .
+          docker tag $ECR_REPO:latest $ECR_URI/$ECR_REPO:latest
+
+      - name: Push Docker image to ECR
+        run: docker push $ECR_URI/$ECR_REPO:latest
