@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'terraform/**'
-      - '.github/workflows/terraform-plan-ci.yml'
+      - '.github/workflows/terraform-apply-ci.yml'
 
 jobs:
   terraform:
