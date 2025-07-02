@@ -8,6 +8,10 @@ on:
       - 'eureka/**'
       - '.github/workflows/eureka-ci.yml'
 
+permissions:
+  id-token: write
+  contents: read
+        
 jobs:
   build-and-push-eureka:
     uses: ./.github/workflows/build-and-push.yml
