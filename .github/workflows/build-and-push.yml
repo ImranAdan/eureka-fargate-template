@@ -26,9 +26,9 @@ jobs:
       contents: read
     env:
       AWS_REGION: eu-west-2
-      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: ${{ secrets.config-git-uri }}
-      SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: ${{ secrets.config-git-username }}
-      SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: ${{ secrets.config-git-password }}
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: ${{ secrets.git-config-uri }}
+      SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: ${{ secrets.git-config-username }}
+      SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: ${{ secrets.git-config-token }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
