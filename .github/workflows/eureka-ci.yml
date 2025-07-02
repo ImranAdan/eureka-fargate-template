@@ -7,6 +7,12 @@ on:
     paths:
       - 'eureka/**'
       - '.github/workflows/eureka-ci.yml'
+    # 🚨 Avoid running this workflow unnecessarily when unrelated workflows or shared workflows change:
+    paths-ignore:
+      - '.github/workflows/configserver-ci.yml'
+      - '.github/workflows/battle-service-ci.yml'
+      - '.github/workflows/build-and-push.yml'
+
 
 permissions:
   id-token: write
