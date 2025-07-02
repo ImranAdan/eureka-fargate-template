@@ -1,17 +1,12 @@
-# Use a recent Eclipse Temurin JDK image
-FROM eclipse-temurin:24-jdk
-
-# Create a working directory
+# Stage 1: Build with Maven + Java 21
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Define the JAR file location (built externally)
-ARG JAR_FILE=target/*.jar
-
-# Copy the JAR file into the container
-COPY ${JAR_FILE} app.jar
-
-# Expose the application port
+# Stage 2: Run with Java 24
+FROM eclipse-temurin:24-jdk-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Define the entry point
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
