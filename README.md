@@ -1,5 +1,9 @@
 # 🌐 Eureka Fargate Template
 
+[![Eureka CI](https://img.shields.io/github/actions/workflow/status/your-org/eureka-fargate-template/eureka-ci.yml?branch=main&style=flat-square&label=Eureka%20CI)](https://github.com/your-org/eureka-fargate-template/actions/workflows/eureka-ci.yml)
+[![Config Server CI](https://img.shields.io/github/actions/workflow/status/your-org/eureka-fargate-template/config-server-ci.yml?branch=main&style=flat-square&label=Config%20Server%20CI)](https://github.com/your-org/eureka-fargate-template/actions/workflows/config-server-ci.yml)
+[![Battle Service CI](https://img.shields.io/github/actions/workflow/status/your-org/eureka-fargate-template/battle-service-ci.yml?branch=main&style=flat-square&label=Battle%20Service%20CI)](https://github.com/your-org/eureka-fargate-template/actions/workflows/battle-service-ci.yml)
+
 A template to bootstrap microservices on AWS Fargate using Spring Cloud Eureka for service discovery and Spring Cloud Config for externalized configuration. Designed for developers to plug in their services with minimal effort and focus on building business logic.
 
 ---
@@ -75,8 +79,8 @@ Access Eureka dashboard: http://localhost:8761
 Each service has its own GitHub Actions workflow:
 
 * `.github/workflows/eureka-ci.yml`
-* `.github/workflows/configserver-ci.yml`
-* `.github/workflows/battle-ci.yml`
+* `.github/workflows/config-server-ci.yml`
+* `.github/workflows/battle-service-ci.yml`
 
 These:
 
@@ -129,4 +133,3 @@ Example: Check config for battle-service from Config Server:
 ```bash 
 curl http://<config-server-endpoint>:8888/battle-service/default
 ```
-
