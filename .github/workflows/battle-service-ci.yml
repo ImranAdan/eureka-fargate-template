@@ -1,4 +1,4 @@
-name: battle-service CI
+name: Battle Service CI
 
 on:
   pull_request:
@@ -8,21 +8,15 @@ on:
       - 'battle-service/**'
       - '.github/workflows/battle-service-ci.yml'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  build:
-    name: Build battle-service
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '24'
-
-      - name: Build with Maven
-        working-directory: ./battle-service
-        run: mvn clean package
+  build-and-push:
+    uses: ./.github/workflows/build-and-push.yml
+    with:
+      working-directory: ./battle-service
+      ecr-repo: battle-service
+    secrets:
+      aws-account-id: ${{ secrets.AWS_ACCOUNT_ID }}
