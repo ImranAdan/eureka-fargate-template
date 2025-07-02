@@ -1,8 +1,7 @@
 # 🌐 Eureka Fargate Template
 
-[![Eureka CI](https://img.shields.io/github/actions/workflow/status/ImranAdan/eureka-fargate-template/eureka-ci.yml?branch=main&style=flat-square&label=Eureka%20CI)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/eureka-ci.yml)
-[![Config Server CI](https://img.shields.io/github/actions/workflow/status/ImranAdan/eureka-fargate-template/config-server-ci.yml?branch=main&style=flat-square&label=Config%20Server%20CI)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/config-server-ci.yml)
-[![Battle Service CI](https://img.shields.io/github/actions/workflow/status/ImranAdan/eureka-fargate-template/battle-service-ci.yml?branch=main&style=flat-square&label=Battle%20Service%20CI)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/battle-service-ci.yml)
+[![Eureka](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/eureka-ci.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/eureka-ci.yml)
+[![ConfigServer](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/config-server-ci.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/config-server-ci.yml)
 
 A template to bootstrap microservices on AWS Fargate using Spring Cloud Eureka for service discovery and Spring Cloud Config for externalized configuration. Designed for developers to plug in their services with minimal effort and focus on building business logic.
 
