@@ -58,6 +58,10 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         run: |
           ECR_URI=${{ secrets.aws-account-id }}.dkr.ecr.${AWS_REGION}.amazonaws.com
-          docker build -t ${{ inputs.ecr-repo }}:latest .
+          docker build \
+            --build-arg CONFIG_GIT_URI="${{ secrets.git-config-uri }}" \
+            --build-arg CONFIG_GIT_USERNAME="${{ secrets.git-config-username }}" \
+            --build-arg CONFIG_GIT_PASSWORD="${{ secrets.git-config-token }}" \
+            -t ${{ inputs.ecr-repo }}:latest .
           docker tag ${{ inputs.ecr-repo }}:latest $ECR_URI/${{ inputs.ecr-repo }}:latest
           docker push $ECR_URI/${{ inputs.ecr-repo }}:latest

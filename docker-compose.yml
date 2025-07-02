@@ -16,6 +16,10 @@ services:
     container_name: config-server
     build:
       context: ./configserver
+      args:
+        CONFIG_GIT_URI: ${CONFIG_GIT_URI}
+        CONFIG_GIT_USERNAME: ${CONFIG_GIT_USERNAME}
+        CONFIG_GIT_PASSWORD: ${CONFIG_GIT_PASSWORD}
     ports:
       - "8888:8888"
     environment:
