@@ -8,26 +8,18 @@ on:
       - 'configserver/**'
       - '.github/workflows/configserver-ci.yml'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-  build:
-    name: Build Config Server
-    runs-on: ubuntu-latest
-
-    env:
-      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: ${{ secrets.GIT_CONFIG_URI }}
-      SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: ${{ secrets.GIT_CONFIG_USERNAME }}
-      SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: ${{ secrets.GIT_CONFIG_TOKEN }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '24'
-
-      - name: Build with Maven
-        working-directory: ./configserver
-        run: mvn clean package
+  build-and-push:
+    uses: ./.github/workflows/build-and-push.yml
+    with:
+      working-directory: ./configserver
+      ecr-repo: config-server
+    secrets:
+      aws-account-id: ${{ secrets.AWS_ACCOUNT_ID }}
+      git-config-uri: ${{ secrets.GIT_CONFIG_URI }}
+      git-config-username: ${{ secrets.GIT_CONFIG_USERNAME }}
+      git-config-token: ${{ secrets.GIT_CONFIG_TOKEN }}
