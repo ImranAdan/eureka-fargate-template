@@ -45,6 +45,9 @@ jobs:
       - name: Terraform Init
         working-directory: terraform
         run: terraform init -input=false
+      - name: Terraform Init Tests
+        working-directory: terraform/modules/networking/tests
+        run: terraform init -input=false
       - name: Terraform Test Networking Module
         working-directory: terraform/modules/networking/tests
         run: terraform test
