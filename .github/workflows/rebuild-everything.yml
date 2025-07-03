@@ -42,9 +42,7 @@ jobs:
       - name: Terraform Apply OIDC components
         working-directory: terraform
         # Replace these targets with your exact OIDC provider + IAM role resources
-        run: terraform apply -auto-approve -input=false \
-          -target=aws_iam_openid_connect_provider.github \
-          -target=aws_iam_role.github-oidc-ecr-push
+        run: terraform apply -auto-approve -input=false -target=aws_iam_openid_connect_provider.github -target=aws_iam_role.github-oidc-ecr-push
 
   create-ecr:
     name: Create ECR repositories
@@ -62,10 +60,7 @@ jobs:
         run: terraform init -input=false
       - name: Terraform Apply (ECR only)
         working-directory: terraform
-        run: terraform apply -auto-approve -input=false \
-          -target=aws_ecr_repository.eureka \
-          -target=aws_ecr_repository.config-server \
-          -target=aws_ecr_repository.battle-service
+        run: terraform apply -auto-approve -input=false -target=aws_ecr_repository.eureka -target=aws_ecr_repository.config-server -target=aws_ecr_repository.battle-service
 
   build-eureka:
     name: Build & Push Eureka image
