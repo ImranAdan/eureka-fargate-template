@@ -3,6 +3,7 @@ resource "aws_ecr_repository" "eureka" {
   image_scanning_configuration {
     scan_on_push = true
   }
+  force_delete = true # Ensures that the repository can be deleted even if it contains images
 }
 
 resource "aws_ecr_repository" "configserver" {
@@ -10,6 +11,7 @@ resource "aws_ecr_repository" "configserver" {
   image_scanning_configuration {
     scan_on_push = true
   }
+  force_delete = true
 }
 
 resource "aws_ecr_repository" "battle" {
@@ -17,4 +19,5 @@ resource "aws_ecr_repository" "battle" {
   image_scanning_configuration {
     scan_on_push = true
   }
+  force_delete = true
 }
