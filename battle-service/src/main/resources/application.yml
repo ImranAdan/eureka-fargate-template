@@ -5,36 +5,18 @@ spring:
     import: "optional:configserver:"
   cloud:
     config:
-      discovery:
-        service-id: config-server
-
+      enabled: true
+      uri: ${CONFIG_SERVER_URI:http://config-server:8888}
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        max-interval: 2000
+        multiplier: 1.1
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://eureka-server:8761/eureka/}
-    register-with-eureka: true
-    fetch-registry: true
-
   instance:
     hostname: ${EUREKA_INSTANCE_HOSTNAME:battle-service}
     prefer-ip-address: false
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: full
-        retryer:
-          period: 100
-          maxPeriod: 1000
-          maxAttempts: 5
-
----
-spring:
-  profiles:
-    active: local
-
-server:
-  port: 8080
