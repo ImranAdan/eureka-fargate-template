@@ -5,6 +5,10 @@ on:
       # Add additional paths as needed
       - '.github/workflows/terraform-tests.yml'
 
+permissions:
+  id-token: write
+  contents: read      
+
 jobs:
   terraform-validate:
     runs-on: ubuntu-latest
