@@ -55,5 +55,4 @@ jobs:
       - name: Terraform Test Networking Module
         working-directory: terraform/modules/networking/tests
         run: | 
-          - echo "Running Terraform tests for networking module in ${pwd}"
           - terraform test
