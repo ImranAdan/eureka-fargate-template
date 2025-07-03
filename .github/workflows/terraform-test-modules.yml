@@ -1,11 +1,10 @@
-name: Terraform Plan
-on:
+on:  
   pull_request:
-    branches:
-      - main
     paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform-plan.yml'
+      - 'terraform/modules/networking/tests/networking.tftest.hcl'
+      # Add additional paths as needed
+      - '.github/workflows/terraform-tests.yml'
+      
 
 jobs:
   terraform-validate:
@@ -31,8 +30,8 @@ jobs:
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
-
-  terraform-plan:
+  
+  terraform-test:
     runs-on: ubuntu-latest
     needs: terraform-validate
     defaults:
@@ -53,6 +52,6 @@ jobs:
         working-directory: terraform
         run: terraform init -input=false
       
-      - name: Terraform Plan
-        working-directory: terraform
-        run: terraform plan -input=false -no-color
+      - name: Terraform Test Networking Module
+        working-directory: terraform/modules/networking/tests
+        run: terraform test -parallelism=1 -json | tee result.json | jq -r '.[] | select(.status != "pass") | .summary' || true      

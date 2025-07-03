@@ -9,7 +9,7 @@ on:
       - '.github/workflows/terraform-apply.yml'
 
 jobs:
-  terraform:
+  terraform-apply:
     runs-on: ubuntu-latest
     defaults:
       run:
