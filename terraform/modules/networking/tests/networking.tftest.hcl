@@ -1,3 +1,8 @@
+# This file is a test configuration for a Terraform networking module. 
+#It defines a test that applies the module and checks various outputs to ensure the networking setup is correct.
+# The test checks for the presence of a VPC, public and private subnets, an Internet Gateway, a NAT Gateway, 
+#and route tables. It also verifies that the number of availability zones matches expectations.
+
 run "test_networking_module" {
   command = apply
 
