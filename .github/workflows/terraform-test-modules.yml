@@ -1,10 +1,9 @@
-on:  
+on:
   pull_request:
     paths:
       - 'terraform/modules/networking/tests/networking.tftest.hcl'
       # Add additional paths as needed
       - '.github/workflows/terraform-tests.yml'
-      
 
 jobs:
   terraform-validate:
@@ -15,22 +14,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.7
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
-      
       - name: Terraform Init
         working-directory: terraform
         run: terraform init -input=false
-      
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
-  
+
   terraform-test:
     runs-on: ubuntu-latest
     needs: terraform-validate
@@ -40,19 +36,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.12.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
-      
       - name: Terraform Init
         working-directory: terraform
         run: terraform init -input=false
-      
       - name: Terraform Test Networking Module
         working-directory: terraform/modules/networking/tests
-        run: | 
-          - terraform test
+        run: terraform test
