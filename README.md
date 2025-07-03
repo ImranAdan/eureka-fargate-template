@@ -2,6 +2,8 @@
 
 [![Eureka](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/eureka-ci.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/eureka-ci.yml)
 [![ConfigServer](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/config-server-ci.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/config-server-ci.yml)
+[![BattleService](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/battle-service-ci.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/battle-service-ci.yml)
+[![Terraform](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/terraform-apply.yml/badge.svg)](https://github.com/ImranAdan/eureka-fargate-template/actions/workflows/terraform-apply.yml)
 
 A template to bootstrap microservices on AWS Fargate using Spring Cloud Eureka for service discovery and Spring Cloud Config for externalized configuration. Designed for developers to plug in their services with minimal effort and focus on building business logic.
 
@@ -72,6 +74,24 @@ Access Eureka dashboard: http://localhost:8761
 
 ---
 
+## 🚀 Running Locally with Docker Compose
+
+To spin up the complete Battle Service stack — including Eureka Server, Config Server, and Battle Service — simply run:
+
+```bash
+docker-compose up --build
+```
+
+This will:
+
+- ✅ Build the images for all services.
+- ✅ Start the services in a strict order to ensure reliable initialization.
+- ✅ Expose the following ports on your local machine:
+
+* Eureka Server: http://localhost:8761/eureka/apps
+* Config Server: http://localhost:8888/actuator/health
+* Battle Service API: http://localhost:8080/tournament?count=6 
+
 
 ## 🏗 Build and Push to ECR (CI/CD)
 
@@ -83,8 +103,8 @@ Each service has its own GitHub Actions workflow:
 
 These:
 
-* Build and verify Maven artifacts.
-* Build and tag Docker images.
+* Verify Maven artifacts.
+* Use a composite workflow to Build and tag Docker images.
 * Push images securely to ECR using GitHub OIDC (no static AWS keys).
 
 ---
