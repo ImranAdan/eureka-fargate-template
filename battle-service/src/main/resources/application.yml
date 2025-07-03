@@ -5,7 +5,14 @@ spring:
     import: "optional:configserver:"
   cloud:
     config:
-
+      enabled: true
+      uri: ${CONFIG_SERVER_URI:http://config-server:8888}
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        max-attempts: 6
+        max-interval: 2000
+        multiplier: 1.1
 eureka:
   client:
     service-url:
@@ -13,11 +20,3 @@ eureka:
   instance:
     hostname: ${EUREKA_INSTANCE_HOSTNAME:battle-service}
     prefer-ip-address: false
-
----
-spring:
-  profiles:
-    active: local
-
-server:
-  port: 8080
