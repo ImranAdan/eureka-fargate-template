@@ -1,5 +1,4 @@
 services:
-
   eureka-server:
     image: eureka-server:latest
     container_name: eureka-server
@@ -9,7 +8,13 @@ services:
       - "8761:8761"
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
+      - EUREKA_INSTANCE_HOSTNAME=eureka-server
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8761/eureka/apps"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
 
   config-server:
     image: config-server:latest
@@ -24,13 +29,54 @@ services:
       - "8888:8888"
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
-      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_HOSTNAME=config-server
       - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=${CONFIG_GIT_URI}
       - SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME=${CONFIG_GIT_USERNAME}
       - SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD=${CONFIG_GIT_PASSWORD}
     depends_on:
-      - eureka-server
+      eureka-server:
+        condition: service_healthy
+
+  # Wait for all dependencies to be ready
+  battle-service-wait:
+    image: curlimages/curl
+    container_name: battle-service-wait
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    command: |
+      sh -c '
+        echo "=== Waiting for Config Server to be fully ready ==="
+        
+        # Wait for config-server health endpoint
+        echo "Checking config-server health..."
+        until curl -f -s http://config-server:8888/actuator/health; do
+          echo "Config server health check failed, retrying in 3s..."
+          sleep 3
+        done
+        echo "✓ Config server is healthy"
+        
+        # Wait for config-server to be able to serve battle-service config
+        echo "Checking battle-service configuration availability..."
+        until curl -f -s http://config-server:8888/battle-service/default; do
+          echo "Battle-service config not available yet, retrying in 3s..."
+          sleep 3
+        done
+        echo "✓ Battle-service configuration is available"
+        
+        # Extra verification: check if config-server is registered with Eureka
+        echo "Verifying config-server registration with Eureka..."
+        until curl -f -s http://eureka-server:8761/eureka/apps/CONFIG-SERVER; do
+          echo "Config-server not registered with Eureka yet, retrying in 3s..."
+          sleep 3
+        done
+        echo "✓ Config-server is registered with Eureka"
+        
+        echo "=== All dependencies ready for battle-service! ==="
+      '
 
   battle-service:
     image: battle-service:latest
@@ -39,13 +85,22 @@ services:
       context: ./battle-service
     ports:
       - "8080:8080"
+    depends_on:
+      battle-service-wait:
+        condition: service_completed_successfully
     environment:
       - SPRING_APPLICATION_NAME=battle-service
-      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_HOSTNAME}
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
-    depends_on:
-      - eureka-server
-      - config-server
+      - EUREKA_INSTANCE_HOSTNAME=battle-service
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      # Override the config server URI explicitly
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+      # Add retry configuration at environment level
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=3000
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=10
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_INTERVAL=10000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.5
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
 
   debug:
     image: curlimages/curl
@@ -53,4 +108,3 @@ services:
     command: sleep infinity
     networks:
       - default
-
