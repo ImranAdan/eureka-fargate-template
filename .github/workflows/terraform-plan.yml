@@ -1,5 +1,4 @@
 name: Terraform Plan
-
 on:
   pull_request:
     branches:
@@ -17,22 +16,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.7
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
-
+      
       - name: Terraform Init
         working-directory: terraform
         run: terraform init -input=false
-
+      
       - name: Terraform Validate
         working-directory: terraform
         run: terraform validate
-
+      
+      - name: Terraform Test All Modules
+        working-directory: terraform/modules
+        run: |
+          # Find all directories containing .tftest.hcl files and run tests
+          for module_dir in */; do
+            if [ -f "${module_dir}"*.tftest.hcl ]; then
+              echo "Running tests for module: ${module_dir}"
+              cd "${module_dir}"
+              terraform test
+              cd ..
+            else
+              echo "No test files found in ${module_dir}, skipping..."
+            fi
+          done
+      
       - name: Terraform Plan
         working-directory: terraform
         if: github.event_name == 'pull_request'
