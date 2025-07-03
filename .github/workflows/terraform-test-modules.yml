@@ -44,7 +44,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.12.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
       
@@ -55,6 +55,5 @@ jobs:
       - name: Terraform Test Networking Module
         working-directory: terraform/modules/networking/tests
         run: | 
-          - echo "Running Terraform tests for networking module in"
-          - pwd
+          - echo "Running Terraform tests for networking module in ${pwd}"
           - terraform test
