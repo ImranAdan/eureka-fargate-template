@@ -37,13 +37,23 @@ jobs:
         run: |
           # Find all directories containing .tftest.hcl files and run tests
           for module_dir in */; do
-            if [ -f "${module_dir}"*.tftest.hcl ]; then
-              echo "Running tests for module: ${module_dir}"
+            module_name=${module_dir%/}
+            echo "Checking module: ${module_name}"
+            
+            # Check if tests directory exists and contains .tftest.hcl files
+            if [ -d "${module_dir}tests" ] && [ -n "$(find "${module_dir}tests" -name "*.tftest.hcl" -type f)" ]; then
+              echo "Running tests for module: ${module_name}"
+              cd "${module_dir}tests"
+              terraform test
+              cd ../..
+            # Check if .tftest.hcl files exist directly in module directory
+            elif [ -n "$(find "${module_dir}" -maxdepth 1 -name "*.tftest.hcl" -type f)" ]; then
+              echo "Running tests for module: ${module_name}"
               cd "${module_dir}"
               terraform test
               cd ..
             else
-              echo "No test files found in ${module_dir}, skipping..."
+              echo "No test files found in ${module_name}, skipping..."
             fi
           done
       
